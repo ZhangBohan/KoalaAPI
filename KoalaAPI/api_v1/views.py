@@ -1,16 +1,11 @@
 import qrcode
 from StringIO import StringIO
-from flask import Flask, send_file, request
+from flask import send_file, request
 
-app = Flask(__name__)
-
-
-@app.route("/")
-def hello():
-    return "Hello World!"
+from . import api_v1
 
 
-@app.route('/v1/qrcode', methods=['POST'])
+@api_v1.route('/qrcode', methods=['POST'])
 def v1_qrcode():
     box_size = request.args.get('box_size', 10)
     border = request.args.get('border', 4)
@@ -33,7 +28,3 @@ def _serve_pil_image(pil_img):
     pil_img.save(img_io, 'PNG')
     img_io.seek(0)
     return send_file(img_io, mimetype='image/jpeg')
-
-
-if __name__ == "__main__":
-    app.run(debug=True)

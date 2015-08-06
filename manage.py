@@ -2,7 +2,9 @@
 
 from flask.ext.script import Manager
 
-from KoalaAPI import app
+from KoalaAPI import create_app
+
+app = create_app()
 
 manager = Manager(app)
 
