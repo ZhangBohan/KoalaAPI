@@ -6,7 +6,7 @@ from flask import send_file, request
 from . import api_v1
 
 
-@api_v1.route('/qrcode')
+@api_v1.route('/qrcode', methods=['GET', 'POST'])
 def v1_qrcode():
     box_size = request.args.get('box_size', 10)
     border = request.args.get('border', 4)
