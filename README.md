@@ -17,7 +17,7 @@ GET /v1/qrcode?box_size=10&border=4&foo=bar
 ```
 
 * box_size(optional) `default=10`
-* border(optional) `default=4`
+* border(optional) `default=1`
 
 response a qrcode image
 
