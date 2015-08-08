@@ -18,6 +18,10 @@ def v1_qrcode():
         border=border,
     )
     if request.method == 'GET':
+        if 'box_size' in request.args:
+            del request.args['box_size']
+        if 'border' in request.args:
+            del request.args['border']
         qr.add_data(json.dumps(request.args))
     else:
         qr.add_data(request.data)
