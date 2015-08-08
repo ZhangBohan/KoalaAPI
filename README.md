@@ -1,8 +1,8 @@
 # KoalaAPI
-Koala API is a program tools API
+Koala API 是用于偷懒的，代码复用不如API复用
 
 ## QRCode API
-this api is a tool for [qrcode 5.1](https://pypi.python.org/pypi/qrcode)
+生成二维码API，基于：[qrcode 5.1](https://pypi.python.org/pypi/qrcode)
 
 ```
 POST /v1/qrcode?box_size=10&border=4
@@ -22,6 +22,7 @@ GET /v1/qrcode?box_size=10&border=4&foo=bar
 response a qrcode image
 
 ## PinYin API
+汉语拼音转换API，基于：[python-pinyin](https://github.com/mozillazg/python-pinyin)
 
 ```
 GET /v1/pinyin?word=你好
