@@ -11,6 +11,7 @@ def v1_qrcode():
     border_arg = 'border'
     box_size = request.args.get(box_size_arg, 10)
     border = request.args.get(border_arg, 1)
+    url = request.args.get('url')
 
     qr = qrcode.QRCode(
         version=1,
@@ -20,9 +21,12 @@ def v1_qrcode():
     )
     if request.method == 'GET':
         data = {}
-        for key, value in request.args.items():
-            if key != border_arg and key != border_arg:
-                data[key] = value[0]
+        if url:
+            data = url
+        else:
+            for key, value in request.args.items():
+                if key != border_arg and key != border_arg and key != url:
+                    data[key] = value[0]
         qr.add_data(data)
     else:
         qr.add_data(request.data)
