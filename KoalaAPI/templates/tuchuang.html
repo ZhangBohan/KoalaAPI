@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<h1>图床</h1>
+<form enctype="multipart/form-data" method="post">
+    七牛AK<input name="ak" value="{{ access_key }}"><br>
+    七牛SK<input name="sk" value="{{ secret_key }}"><br>
+    七牛bucket name<input name="bn" value="{{ bucket_name }}"><br>
+    <input type="file" name="file"><br>
+    <input type="submit">
+</form>
+
+<hr />
+{% if url %}
+    <input value="{{ url }}" size="100">
+{% endif %}
+</body>
+</html>
