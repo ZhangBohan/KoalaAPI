@@ -42,8 +42,8 @@ def tuchuang_callback():
         # 'redirect_uri': url_for('.tuchuang_index', _external=True)
     }
     result = requests.get(url, params, headers={'Accept': 'application/json'})
-    data = json.loads(result)
+    data = result.json()
     params = {"access_token": data.get('access_token')}
     result = requests.get('https://api.github.com/user', params)
-    current_app.logger.debug('result: %s' % result)
-    return redirect(url_for('.tuchuang_index', result=result))
+    current_app.logger.debug('result: %s' % result.text)
+    return redirect(url_for('.tuchuang_index', result=result.text))
