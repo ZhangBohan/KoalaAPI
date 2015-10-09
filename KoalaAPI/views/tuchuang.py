@@ -1,7 +1,7 @@
 from . import main_view
 import json
 from os import abort
-from flask import render_template, request, url_for, current_app
+from flask import render_template, request, url_for, current_app, redirect
 from qiniu import Auth, put_data
 import uuid
 import requests
@@ -46,4 +46,4 @@ def tuchuang_callback():
     params = {"access_token": data.get('access_token')}
     result = requests.get('https://api.github.com/user', params)
     current_app.logger.debug('result: %s' % result)
-    return url_for('.tuchuang_index', result=result)
+    return redirect(url_for('.tuchuang_index', result=result))
