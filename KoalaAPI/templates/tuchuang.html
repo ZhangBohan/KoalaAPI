@@ -6,13 +6,13 @@
 </head>
 <body>
 <h1>图床</h1>
+<a href="GET https://github.com/login/oauth/authorize?scope=user&client_id={{ config.client_id }}">登录</a>
 <form enctype="multipart/form-data" method="post">
     七牛AK<input name="ak" value="{{ access_key }}"><br>
     七牛SK<input name="sk" value="{{ secret_key }}"><br>
     七牛bucket name<input name="bn" value="{{ bucket_name }}"><br>
     <input type="file" name="file"><br>
     <input type="submit">
-    <input type="date">
 </form>
 
 <hr />
