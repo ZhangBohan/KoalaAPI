@@ -48,6 +48,9 @@ def tuchuang_callback():
         'email': user.get('email'),
         'avatar_url': user.get('avatar_url'),
         'username': user.get('username'),
+        'access_key': user.get('access_key'),
+        'secret_key': user.get('secret_key'),
+        'bucket_name': user.get('bucket_name'),
     }
     return redirect(url_for('.tuchuang_index', result=result.text))
 

@@ -1,4 +1,5 @@
-from . import main_view, GitHubUser
+from . import main_view, GitHubUser, File
+from datetime import datetime
 from flask import render_template, request, session, redirect, url_for
 from leancloud import Query
 from qiniu import Auth, put_data
@@ -22,9 +23,13 @@ def tuchuang_index():
         q = Auth(access_key, secret_key)
         token = q.upload_token(bucket_name)
 
-        key = str(uuid.uuid1())
-        ret, info = put_data(up_token=token, key=key, data=request.files.get('file'))
+        upload_file = request.files.get('file')
+        key = '%s_%s' % (datetime.now().isoformat(), upload_file.filename)
+        ret, info = put_data(up_token=token, key=key, data=upload_file)
         url = 'http://%s.qiniudn.com/%s' % (bucket_name, key)
+        f = File()
+        f.set('url', url)
+        f.save()
 
         query = Query(GitHubUser)
         user = query.equal_to('email', user.get('email')).first()
