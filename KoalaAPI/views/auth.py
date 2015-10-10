@@ -34,9 +34,9 @@ def tuchuang_callback():
     data = result.json()
     params = {"access_token": data.get('access_token')}
     result = requests.get('https://api.github.com/user', params)
-    current_app.logger.debug('result: %s' % result.text)
 
     github_user = result.json()
+    current_app.logger.debug('result: %s' % github_user)
     user = None
     try:
         user = User().login(github_user.get('email'), github_user.get('id'))
