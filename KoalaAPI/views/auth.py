@@ -1,5 +1,6 @@
 from . import main_view
 from flask import render_template, request, abort, current_app, redirect, url_for, session
+from leancloud import User, LeanCloudError
 import requests
 
 __author__ = 'bohan'
@@ -34,5 +35,24 @@ def tuchuang_callback():
     params = {"access_token": data.get('access_token')}
     result = requests.get('https://api.github.com/user', params)
     current_app.logger.debug('result: %s' % result.text)
-    session['user'] = result.json()
+
+    github_user = result.json()
+    user = None
+    try:
+        user = User().login(github_user.get('email'), github_user.get('id'))
+    except LeanCloudError as e:
+        if 211 == e.code:   # not register yet
+            user = _register(github_user)
+
+    session['user'] = user
     return redirect(url_for('.tuchuang_index', result=result.text))
+
+
+def _register(github_user):
+    user = User()
+    user.set("username", github_user.get('email'))
+    user.set("password", github_user.get('id'))
+    user.set("email", github_user.get('email'))
+    user.set("avatar_url", github_user.get('avatar_url'))
+    user.sign_up()
+    return user

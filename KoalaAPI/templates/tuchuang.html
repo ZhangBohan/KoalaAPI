@@ -5,6 +5,7 @@
     <title>图床</title>
 </head>
 <body>
+<img src="{{ session.user.avatar_url }}" title="{{ session.user.username }}">
 <h1>图床</h1>
 <form enctype="multipart/form-data" method="post">
     七牛AK<input name="ak" value="{{ access_key }}"><br>
@@ -13,7 +14,6 @@
     <input type="file" name="file"><br>
     <input type="submit">
 </form>
-<img src="{{ session.user.avatar_url }}" title="{{ session.user.name }}">
 <hr />
 {% if url %}
     <input value="{{ url }}" size="100">
