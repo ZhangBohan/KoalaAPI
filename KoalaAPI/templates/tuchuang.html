@@ -5,7 +5,7 @@
     <title>图床</title>
 </head>
 <body>
-<a>{{ session.user.email }}</a>
+<a>{{ session.user.username }}</a>
 <h1>图床</h1>
 <form enctype="multipart/form-data" method="post">
     七牛AK<input name="ak" value="{{ access_key }}"><br>
