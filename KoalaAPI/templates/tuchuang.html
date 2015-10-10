@@ -5,12 +5,12 @@
     <title>图床</title>
 </head>
 <body>
-<a>{{ session.user.username }}</a>
+<img src="{{ session.user.avatar_url }}" style="width: 50px;">
 <h1>图床</h1>
 <form enctype="multipart/form-data" method="post">
-    七牛AK<input name="ak" value="{{ access_key }}"><br>
-    七牛SK<input name="sk" value="{{ secret_key }}"><br>
-    七牛bucket name<input name="bn" value="{{ bucket_name }}"><br>
+    七牛AK<input type="password" name="ak" value="{{ session.user.access_key }}"><br>
+    七牛SK<input type="password" name="sk" value="{{ session.user.secret_key }}"><br>
+    七牛bucket name<input name="bn" value="{{ session.user.bucket_name }}"><br>
     <input type="file" name="file"><br>
     <input type="submit">
 </form>

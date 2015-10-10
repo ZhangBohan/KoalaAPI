@@ -1,11 +1,9 @@
-from . import main_view
+from . import main_view, GitHubUser
 from flask import render_template, request, abort, current_app, redirect, url_for, session
-from leancloud import Object, LeanCloudError, Query
+from leancloud import LeanCloudError, Query
 import requests
 
 __author__ = 'bohan'
-
-GitHubUser = Object.extend('GitHubUser')
 
 
 @main_view.route('/auth/login')
