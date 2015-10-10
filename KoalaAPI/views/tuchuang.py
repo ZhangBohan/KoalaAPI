@@ -3,7 +3,6 @@ from datetime import datetime
 from flask import render_template, request, session, redirect, url_for
 from leancloud import Query
 from qiniu import Auth, put_data
-import uuid
 
 __author__ = 'bohan'
 
@@ -13,8 +12,6 @@ def tuchuang_index():
     user = session.get('user')
     if not user:
         return redirect(url_for('.login'))
-
-    url = access_key = secret_key = bucket_name = None
 
     if request.method == 'POST':
         access_key = str(request.form.get('ak'))
@@ -37,4 +34,7 @@ def tuchuang_index():
         user.set('secret_key', secret_key)
         user.set('bucket_name', bucket_name)
         user.save()
-    return render_template('tuchuang.html', url=url)
+        return redirect(url_for('.tuchuang_index'))
+
+    images = Query(File).add_descending('created_at').limit(10).find()
+    return render_template('tuchuang.html', images=images)

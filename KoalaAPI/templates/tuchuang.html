@@ -11,12 +11,12 @@
     七牛AK<input type="password" name="ak" value="{{ session.user.access_key }}"><br>
     七牛SK<input type="password" name="sk" value="{{ session.user.secret_key }}"><br>
     七牛bucket name<input name="bn" value="{{ session.user.bucket_name }}"><br>
-    <input type="file" name="file"><br>
+    <input type="file" name="file" accept="image/*"><br>
     <input type="submit">
 </form>
 <hr />
-{% if url %}
-    <input value="{{ url }}" size="100">
-{% endif %}
+{% for image in images %}
+    <img src="{{ image.url }}" style="height: 100px;">
+{% endfor %}
 </body>
 </html>
