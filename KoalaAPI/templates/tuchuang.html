@@ -2,11 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title></title>
+    <title>图床</title>
 </head>
 <body>
 <h1>图床</h1>
-<a href="https://github.com/login/oauth/authorize?scope=user&client_id={{ config.client_id }}">登录</a>
 <form enctype="multipart/form-data" method="post">
     七牛AK<input name="ak" value="{{ access_key }}"><br>
     七牛SK<input name="sk" value="{{ secret_key }}"><br>
@@ -14,7 +13,7 @@
     <input type="file" name="file"><br>
     <input type="submit">
 </form>
-
+<img src="{{ session.user.avatar_url }}" title="{{ session.user.name }}">
 <hr />
 {% if url %}
     <input value="{{ url }}" size="100">
