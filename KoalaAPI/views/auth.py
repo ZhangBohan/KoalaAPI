@@ -53,6 +53,6 @@ def _register(github_user):
     user.set("username", github_user.get('email'))
     user.set("password", github_user.get('id'))
     user.set("email", github_user.get('email'))
-    user.set("avatar_url", github_user.get('avatar_url'))
+    # user.set("avatar_url", github_user.get('avatar_url'))
     user.sign_up()
     return user
