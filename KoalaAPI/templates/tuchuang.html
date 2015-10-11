@@ -15,8 +15,10 @@
     <input type="submit">
 </form>
 <hr />
-{% for image in images %}
-    <img src="{{ image.url }}" style="height: 100px;">
-{% endfor %}
+<ul>
+    {% for image in images %}
+        <li><img src="{{ image.get('url') }}" style="height: 100px;"></li>
+    {% endfor %}
+</ul>
 </body>
 </html>

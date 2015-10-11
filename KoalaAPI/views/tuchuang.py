@@ -1,6 +1,6 @@
 from . import main_view, GitHubUser, File
 from datetime import datetime
-from flask import render_template, request, session, redirect, url_for
+from flask import render_template, request, session, redirect, url_for, current_app
 from leancloud import Query
 from qiniu import Auth, put_data
 
@@ -11,7 +11,18 @@ __author__ = 'bohan'
 def tuchuang_index():
     user = session.get('user')
     if not user:
-        return redirect(url_for('.login'))
+        if current_app.debug:
+            user = Query(GitHubUser).first()
+            session['user'] = {
+                'email': user.get('email'),
+                'avatar_url': user.get('avatar_url'),
+                'username': user.get('username'),
+                'access_key': user.get('access_key'),
+                'secret_key': user.get('secret_key'),
+                'bucket_name': user.get('bucket_name'),
+            }
+        else:
+            return redirect(url_for('.login'))
 
     if request.method == 'POST':
         access_key = str(request.form.get('ak'))
@@ -36,5 +47,5 @@ def tuchuang_index():
         user.save()
         return redirect(url_for('.tuchuang_index'))
 
-    images = Query(File).add_descending('created_at').limit(10).find()
+    images = Query(File).descending('url').limit(10).find()
     return render_template('tuchuang.html', images=images)
