@@ -1,5 +1,6 @@
-from . import main_view, GitHubUser, File
+from . import main_view, GitHubUser, File, leanobject_to_dict
 from datetime import datetime
+from KoalaAPI.views.auth import _upload_qiniu_token_or_redirect
 from flask import render_template, request, session, redirect, url_for, current_app
 from leancloud import Query
 from qiniu import Auth, put_data
@@ -12,40 +13,35 @@ def tuchuang_index():
     user = session.get('user')
     if not user:
         if current_app.debug:
-            user = Query(GitHubUser).first()
-            session['user'] = {
-                'email': user.get('email'),
-                'avatar_url': user.get('avatar_url'),
-                'username': user.get('username'),
-                'access_key': user.get('access_key'),
-                'secret_key': user.get('secret_key'),
-                'bucket_name': user.get('bucket_name'),
-            }
+            github_user = Query(GitHubUser).first()
+            user = leanobject_to_dict(github_user)
+            session['user'] = user
+            _upload_qiniu_token_or_redirect(github_user)
         else:
             return redirect(url_for('.login'))
+    github_user = Query(GitHubUser).get(user.get('id'))
+
+    if not session.get('qiniu_token'):
+        return redirect(url_for('.info'))
 
     if request.method == 'POST':
-        access_key = str(request.form.get('ak'))
-        secret_key = str(request.form.get('sk'))
-        bucket_name = str(request.form.get('bn'))
-        q = Auth(access_key, secret_key)
-        token = q.upload_token(bucket_name)
 
         upload_file = request.files.get('file')
         key = '%s_%s' % (datetime.now().isoformat(), upload_file.filename)
-        ret, info = put_data(up_token=token, key=key, data=upload_file)
-        url = 'http://%s.qiniudn.com/%s' % (bucket_name, key)
+        ret, info = put_data(up_token=session.get('qiniu_token'), key=key, data=upload_file)
+        url = 'http://%s.qiniudn.com/%s' % (github_user.get('bucket_name'), key)
         f = File()
         f.set('url', url)
+        f.set('user', github_user)
         f.save()
 
-        query = Query(GitHubUser)
-        user = query.equal_to('email', user.get('email')).first()
-        user.set('access_key', access_key)
-        user.set('secret_key', secret_key)
-        user.set('bucket_name', bucket_name)
-        user.save()
         return redirect(url_for('.tuchuang_index'))
 
-    images = Query(File).descending('url').limit(10).find()
+    images = Query(File).equal_to("user", github_user).descending('url').limit(10).find()
     return render_template('tuchuang.html', images=images)
+
+
+@main_view.route('/tuchuang/list')
+def tuchuang_list():
+    return render_template('tuchuang_list.html')
+
