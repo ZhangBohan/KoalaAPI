@@ -3,8 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <title>图床</title>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
+<div class="pure-menu pure-menu-horizontal pure-menu-scrollable">
+    <a href="#" class="pure-menu-link pure-menu-heading">七牛图床</a>
+    <ul class="pure-menu-list">
+        <li class="pure-menu-item"><a href="{{ url_for('.tuchuang_index') }}" class="pure-menu-link">首页</a></li>
+        <li class="pure-menu-item"><a href="{{ url_for('.tuchuang_list') }}" class="pure-menu-link">我的相册</a></li>
+        <li class="pure-menu-item"><a href="{{ url_for('.info') }}" class="pure-menu-link">设置</a></li>
+    </ul>
+</div>
 <a href="{{ url_for('.info') }}">
     <img src="{{ session.user.avatar_url }}" style="width: 50px;">
 </a>
@@ -14,10 +24,9 @@
     <input type="submit">
 </form>
 <hr />
-<ul>
-    {% for image in images %}
-        <li><img src="{{ image.get('url') }}" style="height: 100px;"></li>
-    {% endfor %}
-</ul>
+{% if image %}
+    <img src="{{ image.get('url') }}" style="height: 100px;">
+    <input value="{{ image.get('url') }}" size="100">
+{% endif %}
 </body>
 </html>
