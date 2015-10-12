@@ -7,9 +7,7 @@ __all__ = ['tuchuang', 'auth']
 
 
 class GitHubUser(Object):
-    def has_qiniu(self):
-        return self.get('access_key') and self.get('secret_key') and self.get('bucket_name')
-
+    pass
 
 File = Object.extend('Files')
 

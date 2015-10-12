@@ -1,8 +1,8 @@
 # coding=utf-8
 from . import main_view, GitHubUser, leanobject_to_dict
-from flask import render_template, request, abort, current_app, redirect, url_for, session, flash
+from flask import render_template, request, abort, current_app, redirect, url_for, session, flash, get_flashed_messages
 from leancloud import LeanCloudError, Query
-from qiniu import Auth, BucketManager
+from qiniu import Auth, put_data
 import requests
 
 __author__ = 'bohan'
@@ -15,15 +15,16 @@ def login():
 
 @main_view.route('/auth/info', methods=['GET', 'POST'])
 def info():
+    if not session.get('user'):
+        redirect(url_for('.login'))
+
     if request.method == 'POST':
         user = Query(GitHubUser).get(session.get('user').get('id'))
 
-        access_key = str(request.form.get('ak'))
-        secret_key = str(request.form.get('sk'))
-        bucket_name = str(request.form.get('bn'))
-        user.set('access_key', access_key)
-        user.set('secret_key', secret_key)
-        user.set('bucket_name', bucket_name)
+        user.set('access_key', request.form.get('ak'))
+        user.set('secret_key', request.form.get('sk'))
+        user.set('bucket_name', request.form.get('bn'))
+        user.set('domain_name', request.form.get('dn'))
         _upload_qiniu_token_or_redirect(user)
         session['user'] = leanobject_to_dict(user)
         flash(u'您已正确填写七牛信息，可以开始使用该图床了', category='success')
@@ -65,7 +66,6 @@ def tuchuang_callback():
         query = Query(GitHubUser)
         user = query.equal_to('email', github_user.get('email')).first()
 
-        _upload_qiniu_token_or_redirect(user)
         session['user'] = leanobject_to_dict(user)
         flash(u'欢迎回来！', category='success')
         return redirect(url_for('.tuchuang_index', result=result.text))
@@ -85,19 +85,18 @@ def _register(github_user):
 
 
 def _upload_qiniu_token_or_redirect(user):
-    if user.has_qiniu():
-        access_key = str(user.get('access_key'))
-        secret_key = str(user.get('secret_key'))
-        bucket_name = str(user.get('bucket_name'))
-        q = Auth(access_key, secret_key)
-        bucket = BucketManager(q)
-        result = bucket.list(bucket_name, limit=1)  # 验证该bucket是否可用
-        # 如果bucket不存在，在此进行错误处理
-        if result[2].status_code != 200:
-            # flash('七牛数据错误，错误：！' % result[2].error, category='warning')
-            return redirect(url_for('.info'))
-        token = q.upload_token(user.get('bucket_name'), expires=3600 * 24 * 365)
-        session['qiniu_token'] = token
-    else:
-        flash('资料不全，请填写完全！', category='warning')
+    access_key = str(user.get('access_key'))
+    secret_key = str(user.get('secret_key'))
+    bucket_name = str(user.get('bucket_name'))
+    domain_name = str(user.get('domain_name'))
+    q = Auth(access_key, secret_key)
+    token = q.upload_token(bucket_name)
+    ret, info = put_data(token, key='foo', data='bar')
+    # 如果bucket不存在，在此进行错误处理
+    if info.status_code != 200:
+        flash(u'七牛数据错误，错误：%s！' % info.error, category='error')
         return redirect(url_for('.info'))
+    url = '{domain_name}/{key}'.format(domain_name=domain_name, key='foo')
+    if requests.get(url).text != 'bar':
+        flash(u'域名错误！', category='error')
+    user.set('qiniu_ok', True)

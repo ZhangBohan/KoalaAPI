@@ -3,12 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <title>登录页面</title>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
+    <link rel="stylesheet" href="/static/css/pure-extras.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
 </head>
-<body style="text-align: center">
-<h1>请使用GitHub登录</h1>
-<a href="https://github.com/login/oauth/authorize?scope=user&client_id={{ config.client_id }}">
-    <i class="fa fa-github fa-5x"></i>
-</a>
+<body>
+{% include '_message.html' %}
+<div style="text-align: center">
+    <h1>请使用GitHub登录</h1>
+    <a href="https://github.com/login/oauth/authorize?scope=user&client_id={{ config.client_id }}">
+        <i class="fa fa-github fa-5x"></i>
+    </a>
+</div>
+
 </body>
 </html>
