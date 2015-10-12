@@ -13,6 +13,7 @@ def tuchuang_index():
     github_user = _get_user()
 
     if not github_user:
+        flash(u'请正确完成牛逼参数设置后上传图片！', category='warning')
         return redirect(url_for('.info'))
 
     if request.method == 'POST':
