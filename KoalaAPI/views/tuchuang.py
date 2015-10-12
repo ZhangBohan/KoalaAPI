@@ -1,6 +1,5 @@
 from . import main_view, GitHubUser, File, leanobject_to_dict
 from datetime import datetime
-from KoalaAPI.views.auth import _upload_qiniu_token_or_redirect
 from flask import render_template, request, session, redirect, url_for, current_app
 from leancloud import Query
 from qiniu import put_data
@@ -41,9 +40,10 @@ def tuchuang_list():
 
 @main_view.route('/tuchuang/waterfall')
 def tuchuang_waterfall_html():
+    github_user = _get_user()
     page = int(request.args.get('page', 1))
     page_size = 20
-    images = Query(File).descending('createdAt').skip((page - 1) * page_size).limit(page_size).find()
+    images = Query(File).equal_to('user', github_user).descending('createdAt').skip((page - 1) * page_size).limit(page_size).find()
     str = ''
     for image in images:
         str += u'''
@@ -58,13 +58,7 @@ def tuchuang_waterfall_html():
 def _get_user():
     user = session.get('user')
     if not user:
-        if current_app.debug:
-            github_user = Query(GitHubUser).first()
-            user = leanobject_to_dict(github_user)
-            session['user'] = user
-            _upload_qiniu_token_or_redirect(github_user)
-        else:
-            return redirect(url_for('.login'))
+        return redirect(url_for('.login'))
     github_user = Query(GitHubUser).get(user.get('id'))
 
     if not session.get('qiniu_token'):
