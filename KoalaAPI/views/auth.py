@@ -86,16 +86,19 @@ def _register(github_user):
 
 def _upload_qiniu_token_or_redirect(user):
     if user.has_qiniu():
-        q = Auth(str(user.get('access_key')), str(user.get('secret_key')))
+        access_key = str(user.get('access_key'))
+        secret_key = str(user.get('secret_key'))
+        bucket_name = str(user.get('bucket_name'))
+        q = Auth(access_key, secret_key)
         bucket = BucketManager(q)
-        result = bucket.list(str(user.get('bucket_name')), limit=1)  # 验证该bucket是否可用
+        result = bucket.list(bucket_name, limit=1)  # 验证该bucket是否可用
         # 如果bucket不存在，在此进行错误处理
         if result[2].status_code != 200:
-            flash(u'七牛数据错误，错误：！' % result[2].error, category='warning')
+            # flash('七牛数据错误，错误：！' % result[2].error, category='warning')
             return redirect(url_for('.info'))
 
         token = q.upload_token(user.get('bucket_name'))
         session['qiniu_token'] = token
     else:
-        flash(u'资料不全，请填写完全！', category='warning')
+        flash('资料不全，请填写完全！', category='warning')
         return redirect(url_for('.info'))

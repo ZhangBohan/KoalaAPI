@@ -14,9 +14,6 @@
         <li class="pure-menu-item"><a href="{{ url_for('.info') }}" class="pure-menu-link">设置</a></li>
     </ul>
 </div>
-<a href="{{ url_for('.info') }}">
-    <img src="{{ session.user.avatar_url }}" style="width: 50px;">
-</a>
 <h1>图床</h1>
 <form enctype="multipart/form-data" method="post">
     <input type="file" name="file" accept="image/*"><br>
