@@ -96,8 +96,7 @@ def _upload_qiniu_token_or_redirect(user):
         if result[2].status_code != 200:
             # flash('七牛数据错误，错误：！' % result[2].error, category='warning')
             return redirect(url_for('.info'))
-
-        token = q.upload_token(user.get('bucket_name'))
+        token = q.upload_token(user.get('bucket_name'), expires=3600 * 24 * 365)
         session['qiniu_token'] = token
     else:
         flash('资料不全，请填写完全！', category='warning')
