@@ -61,7 +61,7 @@ def tuchuang_waterfall_html():
     for image in images:
         str += u'''
 <div class="item" >
-    <img src="{url}" width="192">
+    <img src="{url}?imageView2/2/w/192" width="192">
 </div>
 '''.format(url=image.get('url'))
 

@@ -6,12 +6,13 @@
     <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
     <link rel="stylesheet" href="/static/css/pure-extras.css">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/static/css/reset.css">
+    <link rel="stylesheet" href="/static/css/waterfall.css">
 </head>
 <body>
 <div class="pure-menu pure-menu-horizontal pure-menu-scrollable">
     <a href="{{ url_for('.tuchuang_index') }}" class="pure-menu-link pure-menu-heading">七牛图床</a>
     <ul class="pure-menu-list">
-        <li class="pure-menu-item"><a href="{{ url_for('.tuchuang_list') }}" class="pure-menu-link">我的相册</a></li>
         <li class="pure-menu-item"><a href="{{ url_for('.info') }}" class="pure-menu-link">设置</a></li>
     </ul>
 </div>
@@ -22,9 +23,45 @@
     <input type="submit">
 </form>
 <hr />
-{% if image %}
-    <img src="{{ image.get('url') }}" style="height: 100px;">
-    <input value="{{ image.get('url') }}" size="100">
-{% endif %}
+<div id="container"></div>
+<script src="/static/js/libs/jquery/jquery.js"></script>
+<script src="/static/js/libs/handlebars/handlebars.js"></script>
+<script src="/static/js/waterfall.min.js"></script>
+<script>
+$('#container').waterfall({
+    itemCls: 'item',
+    colWidth: 222,
+    gutterWidth: 15,
+    gutterHeight: 15,
+    checkImagesLoaded: false,
+    dataType: 'html',
+    path: function(page) {
+        return '/tuchuang/waterfall?page=' + page;
+    },
+    callbacks: {
+
+        loadingFinished: function($loading, isBeyondMaxPage) {
+            if ( !isBeyondMaxPage ) {
+                $loading.fadeOut();
+            } else {
+                $loading.hide();
+                $('#page-navigation').show();
+            }
+        },
+        renderData: function (data, dataType) {
+
+
+            if (!data) {
+                $('#container').waterfall('pause', function() {
+                    $('#waterfall-message').html('<p style="color:#666;">no more data...</p>')
+                    //alert('no more data');
+                });
+            } else {
+                return data;
+            }
+        }
+    },
+});
+</script>
 </body>
 </html>
