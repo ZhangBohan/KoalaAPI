@@ -7,18 +7,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
+<div class="pure-menu pure-menu-horizontal pure-menu-scrollable">
+    <a href="{{ url_for('.tuchuang_index') }}" class="pure-menu-link pure-menu-heading">七牛图床</a>
+    <ul class="pure-menu-list">
+        <li class="pure-menu-item"><a href="{{ url_for('.tuchuang_list') }}" class="pure-menu-link">我的相册</a></li>
+        <li class="pure-menu-item"><a href="{{ url_for('.info') }}" class="pure-menu-link">设置</a></li>
+    </ul>
+</div>
 <form class="pure-form pure-form-stacked" method="post">
     <fieldset>
         <legend>设置</legend>
 
         <label for="ak">七牛AK</label>
-        <input id="ak" name="ak" type="password" placeholder="七牛AK" value="{{ session.user.access_key }}">
+        <input id="ak" name="ak" type="text" placeholder="七牛AK" class="pure-input-1" value="{{ session.user.access_key }}">
 
          <label for="sk">七牛SK</label>
-        <input id="sk" name="sk" type="password" placeholder="七牛SK" value="{{ session.user.secret_key }}">
+        <input id="sk" name="sk" type="text" placeholder="七牛SK" class="pure-input-1" value="{{ session.user.secret_key }}">
 
         <label for="bn">七牛bucket name</label>
-        <input id="bn" name="bn" type="text" placeholder="七牛bucket name" value="{{ session.user.bucket_name }}">
+        <input id="bn" name="bn" type="text" placeholder="七牛bucket name" class="pure-input-1" value="{{ session.user.bucket_name }}">
 
         <button type="submit" class="pure-button pure-button-primary">保存</button>
     </fieldset>

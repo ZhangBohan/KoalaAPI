@@ -24,10 +24,11 @@ def info():
         user.set('access_key', access_key)
         user.set('secret_key', secret_key)
         user.set('bucket_name', bucket_name)
-        user.save()
         _upload_qiniu_token_or_redirect(user)
         session['user'] = leanobject_to_dict(user)
         flash(u'您已正确填写七牛信息，可以开始使用该图床了', category='success')
+
+        user.save()
         return redirect(url_for('.info'))
     return render_template('info.html')
 
@@ -88,9 +89,9 @@ def _upload_qiniu_token_or_redirect(user):
         q = Auth(str(user.get('access_key')), str(user.get('secret_key')))
         bucket = BucketManager(q)
         result = bucket.list(str(user.get('bucket_name')), limit=1)  # 验证该bucket是否可用
-        # 如果bucket不存在，则会抛出631错误，在此进行错误处理
-        if result[2].status_code == 631:
-            flash(u'不存在该bucket，请确认是否填写正确！', category='warning')
+        # 如果bucket不存在，在此进行错误处理
+        if result[2].status_code != 200:
+            flash(u'七牛数据错误，错误：！' % result[2].error, category='warning')
             return redirect(url_for('.info'))
 
         token = q.upload_token(user.get('bucket_name'))
