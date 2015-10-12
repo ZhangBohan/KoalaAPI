@@ -14,18 +14,17 @@ def tuchuang_index():
 
     if request.method == 'POST':
 
-        upload_file = request.files.get('file')
-        if upload_file.content_length == 0:
-            redirect(url_for('.tuchuang_index'))
-        key = '%s_%s' % (datetime.now().isoformat(), upload_file.filename)
-        ret, info = put_data(up_token=session.get('qiniu_token'), key=key, data=upload_file)
-        url = 'http://%s.qiniudn.com/%s' % (github_user.get('bucket_name'), key)
-        f = File()
-        f.set('url', url)
-        f.set('user', github_user)
-        f.save()
+        upload_files = request.files.getlist('file')
+        for upload_file in upload_files:
+            key = '%s_%s' % (datetime.now().isoformat(), upload_file.filename)
+            ret, info = put_data(up_token=session.get('qiniu_token'), key=key, data=upload_file)
+            url = 'http://%s.qiniudn.com/%s' % (github_user.get('bucket_name'), key)
+            f = File()
+            f.set('url', url)
+            f.set('user', github_user)
+            f.save()
 
-        return redirect(url_for('.tuchuang_index', image_id=f.id))
+        return redirect(url_for('.tuchuang_index'))
 
     image_id = request.args.get('image_id')
     image = Query(File).get(image_id) if image_id else None
