@@ -43,10 +43,10 @@ def tuchuang_list():
 def tuchuang_waterfall_html():
     page = int(request.args.get('page', 1))
     page_size = 20
-    images = Query(File).skip((page - 1) * page_size).limit(page_size).find()
+    images = Query(File).descending('createdAt').skip((page - 1) * page_size).limit(page_size).find()
     str = ''
     for image in images:
-        str += '''
+        str += u'''
 <div class="item" >
     <img src="{url}" width="192">
 </div>

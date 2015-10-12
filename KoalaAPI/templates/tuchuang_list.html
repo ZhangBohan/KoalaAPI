@@ -31,7 +31,30 @@ $('#container').waterfall({
     dataType: 'html',
     path: function(page) {
         return '/tuchuang/waterfall?page=' + page;
-    }
+    },
+    callbacks: {
+
+        loadingFinished: function($loading, isBeyondMaxPage) {
+            if ( !isBeyondMaxPage ) {
+                $loading.fadeOut();
+            } else {
+                $loading.hide();
+                $('#page-navigation').show();
+            }
+        },
+        renderData: function (data, dataType) {
+
+
+            if (!data) {
+                $('#container').waterfall('pause', function() {
+                    $('#waterfall-message').html('<p style="color:#666;">no more data...</p>')
+                    //alert('no more data');
+                });
+            } else {
+                return data;
+            }
+        }
+    },
 });
 </script>
 </body>
