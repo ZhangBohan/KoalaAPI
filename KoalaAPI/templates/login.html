@@ -12,6 +12,10 @@
 {% include '_message.html' %}
 <div style="text-align: center">
     <h1>请使用GitHub登录</h1>
+    <p>
+        七牛图床是一个基于七牛的个人图床，该个人图床通过GitHub进行登录，用户需要填写七牛空间中的AK、SK、bucket name、domain信息，
+        用于向该图床上传图片，同时展示该图床中上传图片的图片墙，这个项目的初衷是为了方便自己，如果有问题随时联系我。
+    </p>
     <a href="https://github.com/login/oauth/authorize?scope=user&client_id={{ config.client_id }}">
         <i class="fa fa-github fa-5x"></i>
     </a>
